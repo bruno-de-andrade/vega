@@ -10,6 +10,7 @@ import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { VehicleFormComponent } from './vehicle-form/vehicle-form.component';
+import { MakeService } from './services/make.service';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,9 @@ import { VehicleFormComponent } from './vehicle-form/vehicle-form.component';
       { path: 'fetch-data', component: FetchDataComponent },
     ])
   ],
-  providers: [],
+  providers: [
+    MakeService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
