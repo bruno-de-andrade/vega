@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Vega.Models;
+using Vega.Core.Models;
 using Vega.Persistence;
 using Vega.Resources;
 
