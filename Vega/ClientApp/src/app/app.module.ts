@@ -1,7 +1,8 @@
+import * as Raven from 'raven-js';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { ToastyModule } from 'ng2-toasty';
 
@@ -12,6 +13,13 @@ import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { VehicleFormComponent } from './vehicle-form/vehicle-form.component';
 import { VehicleService } from './services/vehicle.service';
+import { AppErrorHandler } from './app.error-handler';
+
+import * as Sentry from "@sentry/browser";
+
+Sentry.init({
+  dsn: "https://93531f2c79ec4958bd14190fc1724910@sentry.io/1333054"
+});
 
 @NgModule({
   declarations: [
@@ -30,11 +38,13 @@ import { VehicleService } from './services/vehicle.service';
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'vehicles/new', component: VehicleFormComponent },
+      { path: 'vehicles/:id', component: VehicleFormComponent },
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
     ])
   ],
   providers: [
+    { provide: ErrorHandler, useClass: AppErrorHandler },
     VehicleService
   ],
   bootstrap: [AppComponent]
