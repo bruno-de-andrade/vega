@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Vega.Core;
 using Vega.Core.Models;
@@ -35,6 +37,24 @@ namespace Vega.Persistence
                 .Include(v => v.Model)
                     .ThenInclude(m => m.Make)
                 .SingleOrDefaultAsync(v => v.Id == id);
+        }
+
+        public async Task<IEnumerable<Vehicle>> GetVehicles(Filter filter)
+        {
+            var query = context.Vehicles
+                .Include(v => v.Features)
+                    .ThenInclude(vf => vf.Feature)
+                .Include(v => v.Model)
+                    .ThenInclude(m => m.Make)
+                .AsQueryable();
+
+            if (filter.MakeId.HasValue)
+                query = query.Where(ValueTask => ValueTask.Model.MakeId == filter.MakeId.Value);
+
+            if (filter.ModelId.HasValue)
+                query = query.Where(ValueTask => ValueTask.ModelId == filter.ModelId.Value);
+
+            return await query.ToListAsync();
         }
     }
 }

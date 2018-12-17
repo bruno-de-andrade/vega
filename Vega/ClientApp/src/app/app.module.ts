@@ -16,6 +16,7 @@ import { VehicleService } from './services/vehicle.service';
 import { AppErrorHandler } from './app.error-handler';
 
 import * as Sentry from "@sentry/browser";
+import { VehicleListComponent } from './vehicle-list/vehicle-list.component';
 
 Sentry.init({
   dsn: "https://93531f2c79ec4958bd14190fc1724910@sentry.io/1333054"
@@ -28,7 +29,8 @@ Sentry.init({
     HomeComponent,
     CounterComponent,
     FetchDataComponent,
-    VehicleFormComponent
+    VehicleFormComponent,
+    VehicleListComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -36,7 +38,8 @@ Sentry.init({
     FormsModule,
     ToastyModule.forRoot(),
     RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
+      { path: '', redirectTo: 'vehicles', pathMatch: 'full' },
+      { path: 'vehicles', component: VehicleListComponent },
       { path: 'vehicles/new', component: VehicleFormComponent },
       { path: 'vehicles/:id', component: VehicleFormComponent },
       { path: 'counter', component: CounterComponent },
