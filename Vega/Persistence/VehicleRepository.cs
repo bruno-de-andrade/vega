@@ -1,9 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Vega.Core;
 using Vega.Core.Models;
+using Vega.Extensions;
 
 namespace Vega.Persistence
 {
@@ -39,7 +42,7 @@ namespace Vega.Persistence
                 .SingleOrDefaultAsync(v => v.Id == id);
         }
 
-        public async Task<IEnumerable<Vehicle>> GetVehicles(Filter filter)
+        public async Task<IEnumerable<Vehicle>> GetVehicles(VehicleQuery queryObj)
         {
             var query = context.Vehicles
                 .Include(v => v.Features)
@@ -48,13 +51,18 @@ namespace Vega.Persistence
                     .ThenInclude(m => m.Make)
                 .AsQueryable();
 
-            if (filter.MakeId.HasValue)
-                query = query.Where(ValueTask => ValueTask.Model.MakeId == filter.MakeId.Value);
+            var columnsMap = new Dictionary<string, Expression<Func<Vehicle, object>>>()
+            {
+                ["make"] = v => v.Model.Make.Name,
+                ["model"] = v => v.Model.Name,
+                ["contactName"] = v => v.ContactName,
+            };
 
-            if (filter.ModelId.HasValue)
-                query = query.Where(ValueTask => ValueTask.ModelId == filter.ModelId.Value);
+            query = query.ApplyOrdering(queryObj, columnsMap);
 
             return await query.ToListAsync();
         }
+
+        
     }
 }
