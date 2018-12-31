@@ -17,6 +17,7 @@ import { AppErrorHandler } from './app.error-handler';
 
 import * as Sentry from "@sentry/browser";
 import { VehicleListComponent } from './vehicle-list/vehicle-list.component';
+import { PaginationComponent } from './pagination/pagination.component';
 
 Sentry.init({
   dsn: "https://93531f2c79ec4958bd14190fc1724910@sentry.io/1333054"
@@ -30,7 +31,8 @@ Sentry.init({
     CounterComponent,
     FetchDataComponent,
     VehicleFormComponent,
-    VehicleListComponent
+    VehicleListComponent,
+    PaginationComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

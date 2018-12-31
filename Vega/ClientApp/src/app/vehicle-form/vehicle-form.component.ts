@@ -35,7 +35,8 @@ export class VehicleFormComponent implements OnInit {
     private router: Router) {
 
     route.params.subscribe(p => {
-      this.vehicle.id = +p["id"]; //Plus to convert to number
+      if (p['id'])
+        this.vehicle.id = +p["id"]; //Plus to convert to number
     })
 
   }

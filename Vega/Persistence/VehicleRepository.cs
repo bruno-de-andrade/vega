@@ -42,14 +42,22 @@ namespace Vega.Persistence
                 .SingleOrDefaultAsync(v => v.Id == id);
         }
 
-        public async Task<IEnumerable<Vehicle>> GetVehicles(VehicleQuery queryObj)
+        public async Task<QueryResult<Vehicle>> GetVehicles(VehicleQuery queryObj)
         {
+            var queryResult = new QueryResult<Vehicle>();
+
             var query = context.Vehicles
                 .Include(v => v.Features)
                     .ThenInclude(vf => vf.Feature)
                 .Include(v => v.Model)
                     .ThenInclude(m => m.Make)
                 .AsQueryable();
+
+            if (queryObj.MakeId.HasValue)
+                query = query.Where(v => v.Model.MakeId == queryObj.MakeId.Value);
+
+            if (queryObj.ModelId.HasValue)
+                query = query.Where(v => v.ModelId == queryObj.ModelId.Value);
 
             var columnsMap = new Dictionary<string, Expression<Func<Vehicle, object>>>()
             {
@@ -60,7 +68,11 @@ namespace Vega.Persistence
 
             query = query.ApplyOrdering(queryObj, columnsMap);
 
-            return await query.ToListAsync();
+            queryResult.TotalItems = await query.CountAsync();
+
+            queryResult.Items = query.ApplyPaging(queryObj);
+
+            return queryResult;
         }
 
         
