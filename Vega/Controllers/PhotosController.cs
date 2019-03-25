@@ -19,20 +19,32 @@ namespace Vega.Controllers
     {
         private readonly IHostingEnvironment host;
         private readonly IVehicleRepository vehicleRepository;
+        private readonly IPhotoRepository photoRepository;
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
         private readonly PhotoSettings photoSettings;
 
-        public PhotosController(IHostingEnvironment host, IVehicleRepository vehicleRepository, 
-            IUnitOfWork unitOfWork, IMapper mapper, IOptionsSnapshot<PhotoSettings> options)
+        public PhotosController(IHostingEnvironment host, IVehicleRepository vehicleRepository,
+            IPhotoRepository photoRepository, IUnitOfWork unitOfWork, IMapper mapper, 
+            IOptionsSnapshot<PhotoSettings> options)
         {
             this.photoSettings = options.Value;
             this.host = host;
             this.vehicleRepository = vehicleRepository;
+            this.photoRepository = photoRepository;
             this.unitOfWork = unitOfWork;
             this.mapper = mapper;
         }
 
+        [HttpGet]
+        public async Task<IEnumerable<PhotoResource>> GetPhotos(int vehicleId)
+        {
+            var photos = await photoRepository.GetPhotos(vehicleId);
+
+            return mapper.Map<IEnumerable<Photo>, IEnumerable<PhotoResource>>(photos);
+        }
+
+        [HttpPost]
         public async Task<IActionResult> Upload(int vehicleId, IFormFile file)
         {
             var vehicle = await vehicleRepository.GetVehicle(vehicleId, false);
@@ -58,7 +70,7 @@ namespace Vega.Controllers
                 Directory.CreateDirectory(uploadsFolderPath);
 
             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
-            var filePath = Path.Combine(uploadsFolderPath + fileName);
+            var filePath = Path.Combine(uploadsFolderPath + "/" + fileName);
 
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
