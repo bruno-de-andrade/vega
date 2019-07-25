@@ -20,6 +20,8 @@ import { VehicleListComponent } from './vehicle-list/vehicle-list.component';
 import { PaginationComponent } from './pagination/pagination.component';
 import { ViewVehicleComponent } from './view-vehicle/view-vehicle.component';
 import { PhotoService } from './services/photo.service';
+import { BrowserXhr } from '@angular/http';
+import { ProgressService, BrowserXhrWithProgress } from './services/progress.service';
 
 Sentry.init({
   dsn: "https://93531f2c79ec4958bd14190fc1724910@sentry.io/1333054"
@@ -54,8 +56,10 @@ Sentry.init({
   ],
   providers: [
     { provide: ErrorHandler, useClass: AppErrorHandler },
+    { provide: BrowserXhr, useClass: BrowserXhrWithProgress },
     VehicleService,
-    PhotoService
+    PhotoService,
+    ProgressService
   ],
   bootstrap: [AppComponent]
 })

@@ -12,7 +12,10 @@ export class PhotoService {
     var formData = new FormData();
     formData.append('file', photo);
 
-    return this.http.post(`/api/vehicles/${vehicleId}/photos`, formData);
+    return this.http.post(`/api/vehicles/${vehicleId}/photos`, formData, {
+      reportProgress: true,
+      observe: 'events'
+    });
   }
 
   getPhotos(vehicleId) {
