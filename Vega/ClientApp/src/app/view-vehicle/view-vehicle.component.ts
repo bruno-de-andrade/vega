@@ -24,7 +24,6 @@ export class ViewVehicleComponent implements OnInit {
     private photoService: PhotoService,
     private toastyService: ToastyService,
     private route: ActivatedRoute,
-    private progressService: ProgressService,
     private router: Router) {
 
     route.params.subscribe(p => {
@@ -62,48 +61,35 @@ export class ViewVehicleComponent implements OnInit {
   }
 
   uploadPhoto() {
-    this.progressService.startTraking()
-      .subscribe(progress => {
-        console.log(progress);
-        this.zone.run(() => {
-          this.progress = progress;
-        });          
-      },
-      null,
-      () => { this.progress = null; });
-
     var nativeElement: HTMLInputElement = this.fileInput.nativeElement;
     var file = nativeElement.files[0];
     nativeElement.value = '';
 
     this.photoService.upload(this.vehicleId, file)
-      .subscribe(event => {
-        console.log(event);
+      .subscribe(
+        result => {
+          if (!result) {
+            return;
+          }
 
-        // Via this API, you get access to the raw event stream.
-        // Look for upload progress events.
-        if (event.type === HttpEventType.UploadProgress) {
-          this.zone.run(() => {
-            this.progress = {
-              total: event.total,
-              percentage: Math.round(event.loaded / event.total * 100)
-            }
+          if (result.total) {
+            this.zone.run(() => {
+              this.progress = result
+            });
+          } else if (result.body) {
+            console.log('File is completely uploaded!');
+            this.photos.push(result.body);
+          }
+        },
+        err => {
+          this.toastyService.error({
+            title: 'Error',
+            msg: err.text(),
+            theme: 'bootstrap',
+            showClose: true,
+            timeout: 5000
           });
-          console.log(this.progress);
-
-        } else if (event instanceof HttpResponse) {
-          console.log('File is completely uploaded!');
-          this.photos.push(event.body);
-        }        
-      },
-      err =>  {
-        this.toastyService.error({
-          title: 'Error',
-          msg: err.text(),
-          theme: 'bootstrap',
-          showClose: true,
-          timeout: 5000
-        });
-      });
+        }
+    );
   }
 }
