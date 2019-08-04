@@ -12,6 +12,16 @@
         <div class='clearfix'></div>
         <div class='navbar-collapse collapse' [ngClass]='{ "in": isExpanded }'>
             <ul class='nav navbar-nav'>
+                <li [routerLinkActive]='["link-active"]'>
+                    <a (click)="auth.login()" *ngIf="!auth.loggedIn">
+                        <span class='glyphicon glyphicon-user'></span> Log In
+                    </a>
+                </li>
+                <li [routerLinkActive]='["link-active"]'>
+                    <a (click)="auth.logout()" *ngIf="auth.loggedIn">
+                        <span class='glyphicon glyphicon-user'></span> Log Out
+                    </a>
+                </li>
                 <li [routerLinkActive]='["link-active"]' [routerLinkActiveOptions]='{ exact: true }'>
                     <a [routerLink]='["/vehicles"]' (click)='collapse()'>
                         <span class='glyphicon glyphicon-home'></span> Vehicles

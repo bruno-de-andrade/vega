@@ -18,6 +18,7 @@ import { VehicleListComponent } from './vehicle-list/vehicle-list.component';
 import { PaginationComponent } from './pagination/pagination.component';
 import { ViewVehicleComponent } from './view-vehicle/view-vehicle.component';
 import { PhotoService } from './services/photo.service';
+import { CallbackComponent } from './callback/callback.component';
 
 Sentry.init({
   dsn: "https://93531f2c79ec4958bd14190fc1724910@sentry.io/1333054"
@@ -33,7 +34,8 @@ Sentry.init({
     VehicleFormComponent,
     VehicleListComponent,
     PaginationComponent,
-    ViewVehicleComponent
+    ViewVehicleComponent,
+    CallbackComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -48,6 +50,7 @@ Sentry.init({
       { path: 'vehicles/:id', component: ViewVehicleComponent },
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
+      { path: 'callback', component: CallbackComponent }
     ])
   ],
   providers: [
