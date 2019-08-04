@@ -3,8 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastyService } from 'ng2-toasty';
 import { VehicleService } from '../services/vehicle.service';
 import { PhotoService } from '../services/photo.service';
-import { ProgressService } from '../services/progress.service';
-import { HttpEventType, HttpResponse, HttpEvent } from '@angular/common/http';
 
 @Component({
   selector: 'app-view-vehicle',
@@ -66,8 +64,7 @@ export class ViewVehicleComponent implements OnInit {
     nativeElement.value = '';
 
     this.photoService.upload(this.vehicleId, file)
-      .subscribe(
-        result => {
+      .subscribe(result => {
           if (!result) {
             return;
           }
@@ -84,7 +81,7 @@ export class ViewVehicleComponent implements OnInit {
         err => {
           this.toastyService.error({
             title: 'Error',
-            msg: err.text(),
+            msg: err.error,
             theme: 'bootstrap',
             showClose: true,
             timeout: 5000
